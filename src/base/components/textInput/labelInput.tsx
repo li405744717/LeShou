@@ -13,7 +13,8 @@ interface Props {
     width?: number,
     disabled?: boolean,
     keyboardType?: KeyboardTypeOptions,
-    style?: any
+    style?: any,
+    secureTextEntry?: boolean
 }
 interface State {
     value: string,
@@ -36,7 +37,7 @@ export default class LabelInput extends React.Component<Props, State> {
     render() {
         return (<View style={[containerStyles.padding, { flex: 1, flexDirection: "row", alignItems: "center" }]}>
             <Text style={[containerStyles.textInput_label, { width: this.props.width || 110 }]}>{this.props.label}：</Text>
-            <TextInput keyboardType={this.props.keyboardType || "default"} value={this.state.value} editable={this.props.disabled} style={[containerStyles.textInput, { flex: 1 }, this.props.style]} placeholder={this.state.placeholder} onChangeText={(text) => { this.onChange(text) }} underlineColorAndroid={"transparent"}></TextInput>
+            <TextInput secureTextEntry={this.props.secureTextEntry} keyboardType={this.props.keyboardType || "default"} value={this.state.value} editable={this.props.disabled} style={[containerStyles.textInput, { flex: 1 }, this.props.style]} placeholder={this.state.placeholder} onChangeText={(text) => { this.onChange(text) }} underlineColorAndroid={"transparent"}></TextInput>
         </View>)
     }
 }

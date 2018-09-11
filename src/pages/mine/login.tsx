@@ -9,35 +9,53 @@ import { TextInput } from 'react-native';
 import LabelInput from '../../base/components/textInput/labelInput';
 import SubmitButton from '../../base/components/button/submitButton';
 import LabelButton from '../../base/components/button/labelButton';
+import { UserAPI } from '../../base/api/user';
 
 
 export default class LoginScreen extends BasePage {
     static navigationOptions = {
-        header: null,
+        // header: null,
         headerTitle: null
+    }
+    loginParams = {
+        loginName: "test",
+        loginPwd: "123456"
     }
     constructor(props, state) {
         super(props, state);
     }
+    login() {
+        UserAPI.login({
+            params: this.loginParams,
+            component: this,
+            success: (data) => {
+                console.log(data)
+            },
+            fail: (err) => {
+                console.log(err)
+            }
+        })
+    }
 
+    inputChange(type, value) {
+        this.loginParams[type] = value
+    }
     render() {
         return (<SafeAreaView style={containerStyles.common}>
             <ScrollView style={[containerStyles.common]}>
                 <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
-
                     <Image style={{ width: 100, height: 100, marginBottom: 20 }} source={require('./../../assets/images/my-name.png')}></Image>
                     <Text style={{ fontSize: 30, color: '#333333' }}>乐手</Text>
-
                 </View>
-                <LabelInput width={70} label="用户名" placeholder="请输入用户名/手机号"></LabelInput>
+                <LabelInput onChange={(value) => { this.inputChange('loginName', value) }} width={70} label="用户名" placeholder="请输入用户名/手机号"></LabelInput>
                 <View style={{ flexDirection: 'row', paddingRight: 10 }}>
                     <LabelInput width={70} label="验证码" placeholder="请输入验证码"></LabelInput>
                     <TouchableOpacity style={[containerStyles.btn, { width: 120, backgroundColor: "#0084ff" }]} >
                         <Text style={{ color: "white", fontSize: 16 }} >发送短信验证码</Text>
                     </TouchableOpacity>
                 </View>
-                <LabelInput width={70} label="密码" placeholder="请输入密码"></LabelInput>
-                <SubmitButton label="登录"></SubmitButton>
+                <LabelInput secureTextEntry={true} onChange={(value) => { this.inputChange('loginPwd', value) }} width={70} label="密码" placeholder="请输入密码"></LabelInput>
+                <SubmitButton label="登录" onPress={() => { this.login() }}></SubmitButton>
             </ScrollView>
         </SafeAreaView >);
     }

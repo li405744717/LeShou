@@ -54,7 +54,7 @@ let getData = (options: Options) => {
     params['sign'] = AppFun.initMd5Str(params);
     let md5: MD5 = new MD5();
     let requestBody = params;
-    params.client = { device: AppConfig.DEVICE, version: AppConfig.VERSION };
+    // params.client = { device: AppConfig.DEVICE, version: AppConfig.VERSION };
     let header = headers ? headers : {};
     header['Accept'] = 'application/json';
     header['Content-Type'] = 'application/json; encoding=utf-8';
@@ -97,10 +97,10 @@ let getData = (options: Options) => {
 }
 
 let callback = (data, component: BasePage, success, fail) => {
-    if (data.header && data.header.responseCode == '0') {// 成功
+    if (data.code == 0) {// 成功
         if (success) success(data);
     } else {
-        var message = (data.header && data.header.responseMessage) ? data.header.responseMessage : "未知错误,请联系管理员";
+        var message = data.msg ? data.msg : "未知错误,请联系管理员";
         if (fail == null) {//默认处理
             component.showErrowView(message);
         } else {//设置了failback

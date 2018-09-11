@@ -7,8 +7,9 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { containerStyles, width, height } from '../../../assets/styles/containerStyles';
 export interface Work {
     id: string,
-    name: string,
-    zuoqu: string,
+    title: string,
+    composer: string,
+    writer: string,
     read: number
 }
 interface Props {
@@ -31,10 +32,13 @@ export default class ListItem extends React.Component<Props, State> {
         return (<TouchableOpacity style={[containerStyles.padding, styles.container]} onPress={() => { this.onPress() }}>
             <Image style={styles.icon} source={require("./../../../assets/images/logo.png")}></Image>
             <View style={{ flexDirection: "column", flex: 1 }}>
-                <Text>{this.props.item.name}</Text>
+                <Text>{this.props.item.title}</Text>
                 <View style={{ flexDirection: "row", marginTop: 5 }}>
                     <View style={{ flex: 1 }}>
-                        <Text>作曲:{this.props.item.zuoqu}</Text>
+                        <Text>作曲:{this.props.item.composer}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <Text>作词:{this.props.item.writer}</Text>
                     </View>
                     <View style={{ flex: 1 }}>
                         <Text>浏览数:{this.props.item.read}</Text>

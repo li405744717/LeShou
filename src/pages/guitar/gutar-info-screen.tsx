@@ -3,18 +3,20 @@ import * as React from 'react';
 import { containerStyles, width, height, navHeight, navTop } from '../../assets/styles/containerStyles';
 import BasePage from '../../base/components/BasePage';
 import Header from '../../base/components/header/header';
-import ListItem, { Work } from '../../base/components/list/listItem';
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view'
 import PageList from '../../base/components/list/pageList';
 import { Animated } from 'react-native';
 import { Easing } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Video from 'react-native-video';
+import { MusicAPI } from '../../base/api/music';
+import { AppConfig } from '../../base/app-config';
 
 export default class GuitarInfoScreen extends BasePage {
 
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
+        
         return {
             headerTitle: "",
             headerRight: <TouchableOpacity style={containerStyles.navRightView} onPress={navigation.state.params ? navigation.state.params.add : null}>
@@ -23,23 +25,25 @@ export default class GuitarInfoScreen extends BasePage {
         }
     }
     public video: Video;
-    public work: Work = {
-        id: "0001",
-        name: "克罗地亚狂想曲",
-        zuoqu: "土豪",
-        read: 2123
-    }
+
     public state = {
-        toolBottom: new Animated.Value(),
+        toolBottom: new Animated.Value(0),
         toolShow: false,
         imageWidth: width,
         imageHeight: 1205 * (width / 750),
         rate: 0,
-        paused: true
+        paused: true,
+        msid:this.props.navigation.state.params.msId
 
     }
     constructor(props, state) {
         super(props, state);
+
+    }
+    componentDidMount(){
+        this.props.navigation.setParams({
+            add:()=>{this.add()}
+        })
     }
     componentWillMount() {
         // let url = this.props.MEDIAS_PATHS[0];
@@ -63,6 +67,17 @@ export default class GuitarInfoScreen extends BasePage {
     }
     add() {
         console.log("收藏");
+        let json5 = {
+            "msId": this.state.msid,
+            "userId": AppConfig.USERID
+        }
+        MusicAPI.addStore({
+            params: json5,
+            component: this,
+            success: (data) => {
+                console.log(data)
+            }
+        })
     }
     show() {
         Animated.timing(this.state.toolBottom, {
@@ -130,7 +145,7 @@ export default class GuitarInfoScreen extends BasePage {
                     }}
                     /* For ExoPlayer */
                     /* source={{ uri: 'http://www.youtube.com/api/manifest/dash/id/bf5bb2419360daf1/source/youtube?as=fmp4_audio_clear,fmp4_sd_hd_clear&sparams=ip,ipbits,expire,source,id,as&ip=0.0.0.0&ipbits=0&expire=19000000000&signature=51AF5F39AB0CEC3E5497CD9C900EBFEAECCCB5C7.8506521BFC350652163895D4C26DEE124209AA9E&key=ik0', type: 'mpd' }} */
-                    source={videoURL}
+                    source={mp3Source}
                     style={styles.musicScreen}
                     rate={1}                          // 控制暂停/播放，0 代表暂停paused, 1代表播放normal.
                     paused={this.state.paused}
