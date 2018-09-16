@@ -29,10 +29,11 @@ export default class LoginScreen extends BasePage {
             params: this.loginParams,
             component: this,
             success: (data) => {
-                console.log(data)
-            },
-            fail: (err) => {
-                console.log(err)
+                AppConfig.USERINFO = {
+                    USERID:data.appUser.id,
+                    USERNAME: data.appUser.username
+                }
+                this.props.navigation.replace("Mine")
             }
         })
     }

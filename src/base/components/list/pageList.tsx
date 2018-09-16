@@ -3,31 +3,27 @@ import { FlatList, Text } from 'react-native';
 import ListItem, { Work } from './listItem';
 import { View } from 'react-native';
 import { MusicAPI } from '../../api/music';
+import { AppConfig } from '../../app-config';
 
 
 
 interface Props {
-    url: string,
-    instrType: number,
-    spectrumType: number,
+    url?: string,
+    instrType?: number,
+    spectrumType?: number,
     onItemPress: any,
     tabLabel?: string,
     dataSource?: any[],
+    storesFlag?:boolean,
     component: any
 }
 export default class PageList extends React.PureComponent<Props, any> {
-    public work: Work = {
-        id: "0001",
-        title: "克罗地亚狂想曲",
-        composer: "土豪",
-        writer: "土豪",
-        read: 2123
-    }
     public haveMore = true
     public page = 1;
     state = {
         dataSource: this.props.dataSource,
-        refreshing: false
+        refreshing: false,
+        storesFlag:this.props.storesFlag
     }
     constructor(props: Props, state) {
         super(props, state);
@@ -38,35 +34,63 @@ export default class PageList extends React.PureComponent<Props, any> {
             refreshing: true
         })
         this.page = 1
-        this.loadSpectrumRows("")
+        this.loadSpectrumRows("",'refresh')
     }
     _onEndReached() {
         if (this.haveMore) {
             console.log('load more');
             this.page++
-            this.loadSpectrumRows("")
+            this.loadSpectrumRows("",'add')
         }
     }
-    loadSpectrumRows(search) {
-        let json4 = {
-            "page": this.page,
-            "pageSize": 10,
-            "instrType": this.props.instrType,
-            "spectrumType": this.props.spectrumType,
-            "search": search || ""
-        }
-        MusicAPI.getRows({
-            params: json4,
-            component: this.props.component,
-            success: (data) => {
-                let rows = data.rows;
-                if (rows.length == 0) this.haveMore = false
-                this.setState({
-                    dataSource: rows,
-                    refreshing: false
-                });
+    loadSpectrumRows(search,type) {
+        if(!this.state.storesFlag){
+            let listParams = {
+                "page": this.page,
+                "pageSize": 10,
+                "instrType": this.props.instrType,
+                "spectrumType": this.props.spectrumType,
+                "search": search || ""
             }
-        })
+            MusicAPI.getRows({
+                params: listParams,
+                component: this.props.component,
+                success: (data) => {
+                    let rows = data.rows;
+                    let dataSource = this.state.dataSource
+                    if (rows.length == 0) this.haveMore = false
+                    if(type == 'add'){
+                        rows = dataSource.concat(rows)
+                    }
+                    this.setState({
+                        dataSource: rows,
+                        refreshing: false
+                    });
+                }
+            })
+        }else{
+            let listParams = {
+                "page": this.page,
+                "pageSize": 10,
+                "userId": AppConfig.USERINFO.USERID
+            }
+            MusicAPI.getStores({
+                params: listParams,
+                component: this.props.component,
+                success: (data) => {
+                    let rows = data.rows;
+                    let dataSource = this.state.dataSource
+                    if (rows.length == 0) this.haveMore = false
+                    if(type == 'add'){
+                        rows = dataSource.concat(rows)
+                    }
+                    this.setState({
+                        dataSource: rows,
+                        refreshing: false
+                    });
+                }
+            })
+        }
     }
 
     setDataSource(newDataSource) {

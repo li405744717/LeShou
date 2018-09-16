@@ -19,7 +19,7 @@ const subscription = NotificationEmitter.addListener(
     (reminder) => { }
 );
 DeviceEventEmitter.addListener("UIEvent", (data) => {
-    console.log(data);
+    // console.log(data);
 })
 export default class GuitarScreen extends BasePage {
     static navigationOptions = {
@@ -27,6 +27,7 @@ export default class GuitarScreen extends BasePage {
     }
     public selectSpectrumType = 0
     public listPages = {}
+    public searchText = ""
     constructor(props, state) {
         super(props, state);
         this.state = {
@@ -51,57 +52,24 @@ export default class GuitarScreen extends BasePage {
     }
 
     componentDidMount() {
-        this.loadSpectrumRows("")
+        this.loadSpectrumRows()
     }
     componentWillUnmount() {
         subscription.remove();
     }
     _onPress(id) {
-        this.props.navigation.navigate("GuitarInfo", {
-            msId:id
-        });
-        let json2 = {
-            page: 1,
-            pageSize: 10,
-            userName: "",
+        let json6 = {
+            "page": 0,
+            "pageSize": 10,
+            "userId": 1
         }
-        let json4 = {
-            "msId": 21,
-            "mediaType": 0
-        }
-        // MusicAPI.getSource({
-        //         params: json4,
-        //         component: this,
-        //         success: (data) => {
-        //             console.log(data)
-        //         }
-        //     })
-
-        //             let json6 = { 
-        //                 "page": 0, 
-        // "pageSize": 10, 
-        // "userId": 1
-        //             }
-        //             MusicAPI.getStores({
-        //                     params: json4,
-        //                     component: this,
-        //                     success: (data) => {
-        //                         console.log(data)
-        //                     }
-        //                 })
-
-
-        //                 let json7 = { 
-        //                     "storeId": 1
-        //                 }
-        //                 MusicAPI.getStores({
-        //                         params: json4,
-        //                         component: this,
-        //                         success: (data) => {
-        //                             console.log(data)
-        //                         }
-        //                     })
-
+        MusicAPI.getStores({
+            params: json6,
+            component: this,
+            success: (data) => {
+                console.log(data)
+            }
+        })
 
 
         // if (Platform.OS == 'android') {
@@ -116,13 +84,13 @@ export default class GuitarScreen extends BasePage {
         //     });
         // }
     }
-    loadSpectrumRows(search) {
+    loadSpectrumRows() {
         let json4 = {
             "page": 1,
             "pageSize": 10,
             "instrType": 1,
             "spectrumType": this.selectSpectrumType,
-            "search": search || ""
+            "search": this.searchText || ""
         }
         MusicAPI.getRows({
             params: json4,
@@ -139,11 +107,11 @@ export default class GuitarScreen extends BasePage {
             this.selectSpectrumType = e.i
         }
         console.log(e)
-        this.loadSpectrumRows("")
+        this.loadSpectrumRows()
     }
     render() {
         return (<SafeAreaView style={[containerStyles.common]}>
-            <Header navigation={this.props.navigation}></Header>
+            <Header navigation={this.props.navigation} searchAction={(text)=>{this.searchText = text;this.loadSpectrumRows()}}></Header>
             <ScrollableTabView initialPage={0} onChangeTab={(e) => { this.onChangeTab(e) }}
                 renderTabBar={() => <ScrollableTabBar />}>
                 <PageList component={this} instrType={1} spectrumType={0} ref={(ref) => { this.listPages[0 + ""] = ref }} key={"0"} url={""} onItemPress={(id) => { this._onPress(id) }} tabLabel="最新"></PageList>

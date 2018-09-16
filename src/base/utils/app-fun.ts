@@ -2,7 +2,6 @@ import { AppConfig } from '../app-config';
 import Storage from 'react-native-storage';
 import { AsyncStorage } from 'react-native';
 import { MD5 } from './md5';
-
 /**
  * 通用js函数调用 
  */
@@ -105,14 +104,14 @@ export class AppFun {
             let jsonStr = AppFun.sortJson(arys);
             // let jsonStr = JSON.stringify(sortJson);
             let md5Str = jsonStr + AppConfig.SALT
-            console.log(md5Str);
+            md5Str = encodeURI(md5Str).replace(/([^\u0000-\u00FF])/g,escape)
+            console.log("md5Str",md5Str)
             let md5 = new MD5();
             let sign = md5.hex_md5(md5Str);
+            console.log("sign",sign)
             return sign;
         } catch (e) {
             return "";
         }
-
     }
 }
-

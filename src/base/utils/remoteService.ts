@@ -79,7 +79,7 @@ let getData = (options: Options) => {
                 console.log("serv", serv, '返回报文:', data);
                 callback(data, component, success, fail);
             } catch (error) {
-                console.log("serv", serv, '返回报文:', json);
+                console.log("error:",error,"serv:", serv, '返回报文:', json);
                 if (catchback) catchback(error)
                 else {
                     component.showErrowView("未知错误,请联系管理员");
@@ -88,7 +88,7 @@ let getData = (options: Options) => {
         })
         .catch((error) => {
             component.hideLoadingView();
-            console.log("serv", serv, '返回报文:', error);
+            console.log("error2:",error,"serv:", serv, '返回报文:', error);
             if (catchback) catchback(error)
             else {
                 component.showErrowView("未知错误,请联系管理员");

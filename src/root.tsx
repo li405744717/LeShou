@@ -39,7 +39,6 @@ export default class RootPage extends React.Component<Props, State> {
             autoSync: false
         }).then(gesturepassword => {
             console.log("gesturepassword", gesturepassword);
-            AppConfig.GESTUREPWD = gesturepassword;
         }).catch(err => {
 
         })

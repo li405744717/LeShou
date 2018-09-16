@@ -12,10 +12,11 @@ import {
     TabsScreen
 } from './pages/tabs'
 //info
-import GuitarInfoScreen from './pages/guitar/gutar-info-screen';
+import GuitarInfoScreen from './pages/guitar/guitar-info-screen';
 //我的
-import MineScreen from './pages/mine/mine';
-import LoginScreen from './pages/mine/login';
+import MineScreen from './pages/mine/mine-screen';
+import LoginScreen from './pages/mine/login-screen';
+import StoresScreen from './pages/mine/stores-screen';
 //功能页面
 import SearchSelectListScreen from './pages/extensions/search-select-listScreen';
 import WebViewScreen from './pages/extensions/webViewScreen';
@@ -46,6 +47,9 @@ export const RootStack = StackNavigator({
     },
     Login: {
         screen: LoginScreen
+    },
+    Stores:{
+        screen:StoresScreen
     },
     PdfView: {
         screen: PdfViewScreen

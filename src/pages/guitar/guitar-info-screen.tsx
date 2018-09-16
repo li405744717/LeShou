@@ -16,7 +16,7 @@ export default class GuitarInfoScreen extends BasePage {
 
     static navigationOptions = ({ navigation }) => {
         const { params } = navigation.state;
-        
+
         return {
             headerTitle: "",
             headerRight: <TouchableOpacity style={containerStyles.navRightView} onPress={navigation.state.params ? navigation.state.params.add : null}>
@@ -33,17 +33,37 @@ export default class GuitarInfoScreen extends BasePage {
         imageHeight: 1205 * (width / 750),
         rate: 0,
         paused: true,
-        msid:this.props.navigation.state.params.msId
+        // msid: this.props.navigation.state.params.msId
+        msid: 21,
+        videoURL: null,
+        audioURL: null,
+        imageURL: []
 
     }
     constructor(props, state) {
         super(props, state);
-
     }
-    componentDidMount(){
+    componentDidMount() {
         this.props.navigation.setParams({
-            add:()=>{this.add()}
+            add: () => { this.add() }
         })
+
+        let sourceParams = {
+            "msId": this.state.msid,
+            "mediaType": 3
+        }
+        MusicAPI.getSource({
+            params: sourceParams,
+            component: this,
+            success: (data) => {
+                this.setState({
+                    imageURL: data.image,
+                    audioURL: data.audio.mediaurl,
+                    videoURL: data.video.mediaurl
+                })
+            }
+        })
+
     }
     componentWillMount() {
         // let url = this.props.MEDIAS_PATHS[0];
@@ -112,6 +132,9 @@ export default class GuitarInfoScreen extends BasePage {
         console.log("onProgress");
     }
     onEnd() {
+        this.setState({
+            paused: true
+        })
         console.log("onEnd");
     }
     videoError() {
@@ -130,50 +153,60 @@ export default class GuitarInfoScreen extends BasePage {
         console.log("pause");
     }
     render() {
-        let videoURL = { uri: "http://112.5.254.246/sh.yinyuetai.com/uploads/videos/common/CD0F0163F6E57A6D670B94AA6172A5A1.mp4" };
-        let mp3Source = require('../../assets/music/modal.mp3');
+        let videoURL = { uri: this.state.videoURL };
+        let mp3Source = { uri: this.state.audioURL };
+        console.log(this.state.audioURL)
+        console.log(this.state.videoURL)
         return (<SafeAreaView style={[containerStyles.common]}>
-            <ScrollView style={{ flex: 1 }} automaticallyAdjustContentInsets={false}>
-                <View style={{ justifyContent: "flex-start" }}>
-                    <TouchableWithoutFeedback onLongPress={() => { this.show() }} onPress={() => { this.hide() }}>
-                        <Image resizeMode={"contain"} source={require('./../../assets/images/qupu/qupu1.jpg')} style={[styles.img, { width: this.state.imageWidth, height: this.state.imageHeight }]}></Image>
-                    </TouchableWithoutFeedback>
-                </View>
-                <Video
-                    ref={(ref: Video) => {
-                        this.video = ref
-                    }}
-                    /* For ExoPlayer */
-                    /* source={{ uri: 'http://www.youtube.com/api/manifest/dash/id/bf5bb2419360daf1/source/youtube?as=fmp4_audio_clear,fmp4_sd_hd_clear&sparams=ip,ipbits,expire,source,id,as&ip=0.0.0.0&ipbits=0&expire=19000000000&signature=51AF5F39AB0CEC3E5497CD9C900EBFEAECCCB5C7.8506521BFC350652163895D4C26DEE124209AA9E&key=ik0', type: 'mpd' }} */
-                    source={mp3Source}
-                    style={styles.musicScreen}
-                    rate={1}                          // 控制暂停/播放，0 代表暂停paused, 1代表播放normal.
-                    paused={this.state.paused}
-                    volume={1}                   // 声音的放大倍数，0 代表没有声音，就是静音muted, 1 代表正常音量 normal，更大的数字表示放大的倍数
-                    muted={false}                  // true代表静音，默认为false.
-                    resizeMode='cover'       // 视频的自适应伸缩铺放行为，
-                    onLoad={() => { this._onLoad() }}                       // 当视频加载完毕时的回调函数
-                    onLoadStart={() => { this.loadStart() }}            // 当视频开始加载时的回调函数
-                    onProgress={() => { this.onProgress() }}   //  进度控制，每250ms调用一次，以获取视频播放的进度
-                    onEnd={() => { this.onEnd() }}             // 当视频播放完毕后的回调函数
-                    onError={() => { this.videoError() }}    // 当视频不能加载，或出错后的回调函数
-                    // onAudioBecomingNoisy={this.onAudioBecomingNoisy}
-                    // onAudioFocusChanged={this.onAudioFocusChanged}
-                    repeat={false}                            // 是否重复播放
-                />
+            <ScrollView style={{ flex: 1 }} automaticallyAdjustContentInsets={false} horizontal={true} pagingEnabled={true}>
+
+                {
+                    this.state.imageURL.map((item, index) => {
+                        return <View key={"image" + index} style={[styles.sourceImage, { width: this.state.imageWidth, height: this.state.imageHeight }]}>
+                            <TouchableWithoutFeedback onLongPress={() => { this.show() }} onPress={() => { this.hide() }}>
+                                <Image resizeMode={"contain"} source={{ uri: item.mediaurl }} style={[styles.img, { width: this.state.imageWidth, height: this.state.imageHeight }]}></Image>
+                            </TouchableWithoutFeedback>
+                        </View>
+                    })
+                }
             </ScrollView>
+            <Video
+                ref={(ref: Video) => {
+                    this.video = ref
+                }}
+                source={mp3Source}
+                style={styles.musicScreen}
+                rate={1}                          // 控制暂停/播放，0 代表暂停paused, 1代表播放normal.
+                paused={this.state.paused}
+                volume={1}                   // 声音的放大倍数，0 代表没有声音，就是静音muted, 1 代表正常音量 normal，更大的数字表示放大的倍数
+                muted={false}                  // true代表静音，默认为false.
+                resizeMode='cover'       // 视频的自适应伸缩铺放行为，
+                onLoad={() => { this._onLoad() }}                       // 当视频加载完毕时的回调函数
+                onLoadStart={() => { this.loadStart() }}            // 当视频开始加载时的回调函数
+                onProgress={() => { this.onProgress() }}   //  进度控制，每250ms调用一次，以获取视频播放的进度
+                onEnd={() => { this.onEnd() }}             // 当视频播放完毕后的回调函数
+                onError={() => { this.videoError() }}    // 当视频不能加载，或出错后的回调函数
+                // onAudioBecomingNoisy={this.onAudioBecomingNoisy}
+                // onAudioFocusChanged={this.onAudioFocusChanged}
+                repeat={false}                            // 是否重复播放
+            />
             <Animated.View style={[styles.toolContainer, { bottom: this.state.toolBottom }]}>
                 <View style={{ flex: 1 }}></View>
-                <View style={styles.btn_View}>
-                    <TouchableOpacity onPress={() => { this.play() }}>
-                        <Ionicons size={30} name={'ios-musical-notes'} color={'white'}></Ionicons>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.btn_View}>
-                    <TouchableOpacity onPress={() => { this.pause() }}>
-                        <Ionicons size={30} name={'ios-videocam'} color={'white'}></Ionicons>
-                    </TouchableOpacity>
-                </View>
+                {
+                    this.state.paused ?
+                        <View style={styles.btn_View} >
+                            <TouchableOpacity onPress={() => { this.play() }}>
+                                <Ionicons size={30} name={'ios-play'} color={'white'}></Ionicons>
+                            </TouchableOpacity>
+                        </View>
+                        :
+                        <View style={styles.btn_View}>
+                            <TouchableOpacity onPress={() => { this.pause() }}>
+                                <Ionicons size={30} name={'ios-pause'} color={'white'}></Ionicons>
+                            </TouchableOpacity>
+                        </View>
+                }
+
             </Animated.View>
         </SafeAreaView >);
     }
@@ -197,13 +230,19 @@ const styles = StyleSheet.create({
     },
     musicScreen: {
         width: width,
-        height: 100
+        height: 1
     },
     btn_View: {
         width: 50,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center"
+    },
+    sourceImage: {
+        justifyContent: "flex-start",
+
+        borderWidth: 1,
+        borderColor: 'black'
     }
 
 })

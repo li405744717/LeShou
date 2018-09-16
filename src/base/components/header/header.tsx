@@ -8,6 +8,7 @@ import { width, containerStyles, navTop } from '../../../assets/styles/container
 import { TouchableWithoutFeedback } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import SearchBar from '../searchBar';
+import { AppConfig } from '../../app-config';
 interface Props {
     placeholder?: string,
     style?: any,
@@ -26,7 +27,12 @@ export default class Header extends React.Component<Props, State> {
 
     }
     goMine() {
-        this.props.navigation.navigate("Mine");
+        if(AppConfig.USERINFO == null){
+            this.props.navigation.navigate("Login");
+        }else{
+            this.props.navigation.navigate("Mine");
+        }
+        
     }
     clearText() {
         this.changeText("");

@@ -17,6 +17,13 @@ export default class MineScreen extends BasePage {
     gotoLogin() {
         this.props.navigation.navigate("Login");
     }
+    gotoStores(){
+        this.props.navigation.navigate("Stores");
+    }
+    logout(){
+        AppConfig.USERINFO = null
+        this.props.navigation.Reset("Login")
+    }
     render() {
         return (<SafeAreaView style={containerStyles.common}>
             <ScrollView style={containerStyles.common}>
@@ -25,15 +32,16 @@ export default class MineScreen extends BasePage {
                 </TouchableOpacity>
                 <View style={[containerStyles.padding_TB_25, { alignItems: "center", justifyContent: "center" }]}>
                     <Image style={{ width: 75, height: 75 }} source={require('./../../assets/images/my-name.png')}></Image>
-                    <Text style={{ marginTop: 10 }}>{AppConfig.USERNAME + '(' + AppConfig.USERID + ')'}</Text>
+                    <Text style={{ marginTop: 10 }}>{AppConfig.USERINFO.USERNAME + '(' + AppConfig.USERINFO.USERID + ')'}</Text>
                 </View>
                 <View style={containerStyles.fg_line}>
                 </View>
-                <MineItem source={require("./../../assets/images/read.png")} title={'最近浏览'} action={() => { }}></MineItem>
+                <MineItem source={require("./../../assets/images/read.png")} title={'最近浏览'} action={() => {this.gotoStores()}}></MineItem>
                 <View style={containerStyles.fg_line}>
                 </View>
                 <MineItem source={require("./../../assets/images/threadGL.png")} title={'我的收藏'} action={() => { }}></MineItem>
-
+                <View style={containerStyles.fg_line}>
+                <MineItem source={require("./../../assets/images/read.png")} title={'退出登录'} action={() => { }}></MineItem></View>
                 <View style={containerStyles.fg_line}>
                 </View>
             </ScrollView>
