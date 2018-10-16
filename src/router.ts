@@ -17,6 +17,8 @@ import GuitarInfoScreen from './pages/guitar/guitar-info-screen';
 import MineScreen from './pages/mine/mine-screen';
 import LoginScreen from './pages/mine/login-screen';
 import StoresScreen from './pages/mine/stores-screen';
+import RegisterScreen from './pages/mine/register-screen';
+
 //功能页面
 import SearchSelectListScreen from './pages/extensions/search-select-listScreen';
 import WebViewScreen from './pages/extensions/webViewScreen';
@@ -48,6 +50,10 @@ export const RootStack = StackNavigator({
     Login: {
         screen: LoginScreen
     },
+    Register:{
+        screen: RegisterScreen
+    },
+
     Stores:{
         screen:StoresScreen
     },

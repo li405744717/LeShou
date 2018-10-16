@@ -58,19 +58,19 @@ export default class GuitarScreen extends BasePage {
         subscription.remove();
     }
     _onPress(id) {
-        let json6 = {
-            "page": 0,
-            "pageSize": 10,
-            "userId": 1
-        }
-        MusicAPI.getStores({
-            params: json6,
-            component: this,
-            success: (data) => {
-                console.log(data)
-            }
-        })
-
+        this.props.navigation.navigate("GuitarInfo",{id:id});
+        // let json6 = {
+        //     "page": 0,
+        //     "pageSize": 10,
+        //     "userId": 1
+        // }
+        // MusicAPI.getStores({
+        //     params: json6,
+        //     component: this,
+        //     success: (data) => {
+        //         console.log(data)
+        //     }
+        // })
 
         // if (Platform.OS == 'android') {
         //     AndroidToastModule.show('Awesome', AndroidToastModule.SHORT)

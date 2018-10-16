@@ -31,16 +31,38 @@ export const containerStyles = StyleSheet.create({
         backgroundColor: "white",
         flex: 1
     },
-    y_mediate: {
+    flex_row:{
+        flexDirection:"row"
+    },
+    flex_column:{
+        flexDirection:"column"
+    },
+    justify_center: {
         justifyContent: "center"
     },
-    x_mediate: {
+    justify_start: {
+        justifyContent: "flex-start"
+    },
+    justify_end: {
+        justifyContent: "flex-end"
+    },
+    align_center: {
         alignItems: "center"
     },
-    mediate: {
+    align_start: {
+        alignItems: "flex-start"
+    },
+    align_end: {
+        alignItems: "flex-end"
+    },
+    center: {
         justifyContent: "center",
         alignItems: "center"
     },
+    flex_1:{
+        flex:1
+    },
+    
     top: {
         position: "absolute",
         //left:0,

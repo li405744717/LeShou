@@ -10,7 +10,6 @@ const switch_gesture = (flag) => {
 
 
 
-
 export default {
     mine: {
         switch_gesture

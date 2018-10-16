@@ -11,6 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Video from 'react-native-video';
 import { MusicAPI } from '../../base/api/music';
 import { AppConfig } from '../../base/app-config';
+import Tools  from "../../base/commonTools";
 
 export default class GuitarInfoScreen extends BasePage {
 
@@ -87,17 +88,21 @@ export default class GuitarInfoScreen extends BasePage {
     }
     add() {
         console.log("收藏");
-        let json5 = {
-            "msId": this.state.msid,
-            "userId": AppConfig.USERID
-        }
-        MusicAPI.addStore({
-            params: json5,
-            component: this,
-            success: (data) => {
-                console.log(data)
+        if(AppConfig.USERINFO && AppConfig.USERINFO.USERID){
+            let json5 = {
+                "msId": this.state.msid,
+                "userId": AppConfig.USERINFO.USERID
             }
-        })
+            MusicAPI.addStore({
+                params: json5,
+                component: this,
+                success: (data) => {
+                    console.log(data)
+                }
+            })
+        }else{
+            Tools.shortAlert('请先登录')
+        }
     }
     show() {
         Animated.timing(this.state.toolBottom, {
